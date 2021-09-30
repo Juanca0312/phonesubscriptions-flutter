@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:phonesubscriptions/models/phone_subscription_model.dart';
 import 'package:phonesubscriptions/services/phone_subscription_service.dart';
+import 'package:phonesubscriptions/widgets/card_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -10,8 +12,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-
   PhoneSubscriptionService service = new PhoneSubscriptionService();
   List<PhoneSubscription> subscriptions = [];
   bool loading = true;
@@ -50,12 +50,10 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Container(
-        child: ListView.builder(
+        child: subscriptions.length == 0 ? SpinKitDoubleBounce(size: 70, color: Colors.blue,) : ListView.builder(
           itemCount: subscriptions.length,
           itemBuilder: (BuildContext context, int i){
-            return ListTile(
-              title: Text(subscriptions[i].networkTechnology.toString(), style: TextStyle(color: Colors.black),),
-            );
+            return CardWidget(phoneSubscription: subscriptions[i]);
           },
         ),
       ),
