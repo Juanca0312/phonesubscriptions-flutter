@@ -4,6 +4,7 @@ import 'package:phonesubscriptions/colors/colors.dart';
 import 'package:phonesubscriptions/models/phone_subscription_model.dart';
 import 'package:phonesubscriptions/services/phone_subscription_service.dart';
 import 'package:phonesubscriptions/widgets/card_widget.dart';
+import 'package:phonesubscriptions/widgets/edit_dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -52,51 +53,50 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Container(
         color: IColors.light_blue,
-        child: subscriptions.length == 0 ? SpinKitDoubleBounce(size: 70, color: Colors.blue,) : ListView.builder(
+        child: subscriptions.length == 0 ? SpinKitDoubleBounce(size: 70, color: IColors.steel,) : ListView.builder(
           itemCount: subscriptions.length,
           itemBuilder: (BuildContext context, int i){
             return Dismissible(
                 key: Key(subscriptions[i].id.toString()),
                 confirmDismiss: (DismissDirection direction) async {
-                  if(direction == DismissDirection.endToStart){
+                  if(direction == DismissDirection.endToStart){ //eliminar confirmacion
                     return await showDialog(context: context, builder: (context){
+
                       return AlertDialog(
                         title: Text("Estas seguro que deseas eliminar?"),
                         actions: [
-                          ElevatedButton(onPressed: (){Navigator.of(context).pop(true);}, child: Text('Eliminar')),
-                          ElevatedButton(onPressed: (){Navigator.of(context).pop(false);}, child: Text('Cancelar'))
-
+                          ElevatedButton(style: ElevatedButton.styleFrom(primary: Colors.transparent, shadowColor: Colors.transparent),onPressed: (){Navigator.of(context).pop(false);}, child: Text('Cancelar', style: TextStyle(color: Colors.black),)),
+                          ElevatedButton(style: ElevatedButton.styleFrom(primary: IColors.red), onPressed: (){Navigator.of(context).pop(true);}, child: Text('Eliminar')),
                         ],
                       );
                     });
                   } else{
-                    return await showDialog(context: context, builder: (context){
-                      return AlertDialog(
-                        title: Text("Estas seguro que deseas editar?"),
-                        actions: [
-                          ElevatedButton(onPressed: (){Navigator.of(context).pop(true);}, child: Text('Eliminar')),
-                          ElevatedButton(onPressed: (){Navigator.of(context).pop(false);}, child: Text('Cancelar'))
-
-                        ],
-                      );
+                    return  showDialog(context: context, barrierDismissible: true,builder: (context){return
+                      EditDialog(subscription: subscriptions[i],);
                     });
+
                   }
                 },
-                onDismissed: (DismissDirection direction){
-                  if(direction == DismissDirection.endToStart){
+
+                onDismissed: (DismissDirection direction) {
+                  if(direction == DismissDirection.endToStart){ //eliminar
                     service.deleteData(subscriptions[i].id);
                     setState(() {
                       subscriptions.removeAt(i);
                     });
+                  }else{
+                    setState(() {
+                    });
                   }
+
                 },
                 background: Container(
                   color: IColors.indian_yellow,
-                  child: Icon(Icons.edit),
+                  child: Icon(Icons.edit, color: Colors.white,),
                 ),
                 secondaryBackground:Container(
                   color: IColors.red,
-                  child: Icon(Icons.delete),
+                  child: Icon(Icons.delete, color: Colors.white,),
 
                 ),
                 child: CardWidget(phoneSubscription: subscriptions[i]));
