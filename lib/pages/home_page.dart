@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:ms_undraw/ms_undraw.dart';
 import 'package:phonesubscriptions/colors/colors.dart';
 import 'package:phonesubscriptions/models/phone_subscription_model.dart';
 import 'package:phonesubscriptions/services/phone_subscription_service.dart';
@@ -16,16 +17,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   PhoneSubscriptionService service = new PhoneSubscriptionService();
   List<PhoneSubscription> subscriptions = [];
-  bool loading = true;
 
   void getData() async{
+    subscriptions = [];
+    service.error = false;
     await service.getData();
     assignData();
 
   }
 
   void assignData(){
-    loading=false;
     setState(() {
       subscriptions = service.phoneSubscriptionList;
     });
@@ -53,7 +54,9 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Container(
         color: IColors.light_blue,
-        child: subscriptions.length == 0 ? SpinKitDoubleBounce(size: 70, color: IColors.steel,) : ListView.builder(
+        child: subscriptions.length == 0 && service.error == false ? SpinKitDoubleBounce(size: 70, color: IColors.steel,) : service.error ? Stack(children: [UnDraw(illustration: UnDrawIllustration.page_not_found, color: IColors.rich_black), Positioned.fill(child: Align(alignment: Alignment.bottomCenter, child: ElevatedButton(onPressed: (){setState(() {
+          getData();
+        });}, child: Text('Reload'),),),)], ) : ListView.builder(
           itemCount: subscriptions.length,
           itemBuilder: (BuildContext context, int i){
             return Dismissible(

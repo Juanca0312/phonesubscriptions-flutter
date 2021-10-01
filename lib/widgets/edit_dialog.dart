@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phonesubscriptions/colors/colors.dart';
 import 'package:phonesubscriptions/models/phone_subscription_model.dart';
+import 'package:phonesubscriptions/services/phone_subscription_service.dart';
 
 class EditDialog extends StatefulWidget {
   const EditDialog({Key? key, required this.subscription}) : super(key: key);
@@ -11,31 +12,23 @@ class EditDialog extends StatefulWidget {
 }
 
 class _EditDialogState extends State<EditDialog> {
-  final items = <String>[
-    '01',
-    '02',
-    '03',
-    '04',
-    '05',
-    '06',
-    '07',
-    '08',
-    '09',
-    '10',
-    '11',
-    '12'
-  ].map<DropdownMenuItem<String>>((String value) {
+  final items = <String>['01','02','03','04','05','06','07','08','09','10','11','12'].map<DropdownMenuItem<String>>((String value) {
     return DropdownMenuItem<String>(
       value: value,
       child: Text(value),
     );
   }).toList();
 
+  String mes = '01';
   final TextEditingController _year = TextEditingController();
   final TextEditingController _tech = TextEditingController();
   final TextEditingController _plan = TextEditingController();
   final TextEditingController _subs = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  PhoneSubscriptionService service = new PhoneSubscriptionService();
+
+
 
   setControllersData(PhoneSubscription subscription){
     setState(() {
@@ -45,9 +38,6 @@ class _EditDialogState extends State<EditDialog> {
       _subs.text = subscription.subscriptions!.toString();
     });
   }
-
-  String mes = '01';
-
 
   @override
   Widget build(BuildContext context) {
@@ -142,9 +132,21 @@ class _EditDialogState extends State<EditDialog> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(onPressed: () {}, child: Text('Cancelar')),
+                  ElevatedButton(onPressed: () {Navigator.of(context).pop(false);}, child: Text('Cancelar')),
 
-                  ElevatedButton(onPressed: () {}, child: Text('Actualizar')),
+                  ElevatedButton(onPressed: () {
+                    if(_formKey.currentState!.validate()){
+                      final updatedData = new PhoneSubscription(id: widget.subscription.id, month: _year.text+'-'+mes+'-'+'01', networkTechnology: _tech.text, planType: _plan.text, subscriptions: int.parse(_subs.text));
+                      print(updatedData.id);
+                      print(updatedData.month);
+                      print(updatedData.networkTechnology);
+                      print(updatedData.planType);
+                      print(updatedData.subscriptions);
+
+                      service.updateData(updatedData);
+                      Navigator.of(context).pop();
+                    }
+                  }, child: Text('Actualizar')),
                 ],
               )
             ],
