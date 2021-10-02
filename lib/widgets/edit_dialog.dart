@@ -70,9 +70,10 @@ class _EditDialogState extends State<EditDialog> {
                       children: [
                         Text('Seleccione el año', style: TextStyle(fontSize: 18),),
                         TextFormField(
+                          keyboardType: TextInputType.number,
                           controller: _year,
                           validator: (value){
-                            return value!.isNotEmpty ? null : 'Campos invalidos';
+                            return value!.isNotEmpty && int.parse(value) > 0 ? null : 'Campos invalidos';
                           },
                           decoration: InputDecoration(labelText: 'Año'),
                         ),
@@ -118,8 +119,9 @@ class _EditDialogState extends State<EditDialog> {
                         Text('Ingrese las subscripciones', style: TextStyle(fontSize: 18),),
                         TextFormField(
                           controller: _subs,
+                          keyboardType: TextInputType.number,
                           validator: (value){
-                            return value!.isNotEmpty ? null : 'Campos invalidos';
+                            return value!.isNotEmpty && int.parse(value) > 0 ? null : 'Campos invalidos';
                           },
                           decoration: InputDecoration(labelText: 'Subscripciones'),
                         ),
@@ -132,16 +134,31 @@ class _EditDialogState extends State<EditDialog> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(onPressed: () {Navigator.of(context).pop(false);}, child: Text('Cancelar')),
-
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              side: BorderSide(color: Colors.black)
+                          ),
+                          primary: Colors.transparent,
+                          shadowColor:
+                          Colors.transparent),
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      child: Text(
+                        'Cancelar',
+                        style: TextStyle(
+                            color: Colors.black),
+                      )),
                   ElevatedButton(onPressed: () {
                     if(_formKey.currentState!.validate()){
                       final updatedData = new PhoneSubscription(id: widget.subscription.id, month: _year.text+'-'+mes+'-'+'01', networkTechnology: _tech.text, planType: _plan.text, subscriptions: int.parse(_subs.text));
-
                       service.updateData(updatedData);
                       Navigator.of(context).pop();
                     }
-                  }, child: Text('Actualizar')),
+                  }, child: Text('Actualizar'),                                             style: ElevatedButton.styleFrom(
+                      primary: IColors.indian_yellow),),
                 ],
               )
             ],

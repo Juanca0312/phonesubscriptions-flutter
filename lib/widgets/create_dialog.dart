@@ -142,8 +142,23 @@ class _AddDialogState extends State<AddDialog> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(onPressed: () {Navigator.of(context).pop(false);}, child: Text('Cancelar')),
-
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          side: BorderSide(color: Colors.black)
+                        ),
+                          primary: Colors.transparent,
+                          shadowColor:
+                          Colors.transparent),
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      child: Text(
+                        'Cancelar',
+                        style: TextStyle(
+                            color: Colors.black),
+                      )),
                   ElevatedButton(onPressed: () {
                     if(_formKey.currentState!.validate()){
                       final createdData = new PhoneSubscription(id: null, month: _year.text+'-'+mes+'-'+'01', networkTechnology: tech, planType: plan, subscriptions: int.parse(_subs.text));
@@ -151,7 +166,8 @@ class _AddDialogState extends State<AddDialog> {
                       service.createData(createdData);
                       Navigator.of(context).pop();
                     }
-                  }, child: Text('Crear')),
+                  }, child: Text('Crear'),                                             style: ElevatedButton.styleFrom(
+                      primary: IColors.russian_green),),
                 ],
               )
             ],
