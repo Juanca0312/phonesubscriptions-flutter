@@ -52,4 +52,22 @@ class PhoneSubscriptionService{
       error = true;
     }
   }
+
+  Future<void> createData(PhoneSubscription phoneSubscription) async{
+    try{
+      final body = {
+        'month' : phoneSubscription.month,
+        'network_technology': phoneSubscription.networkTechnology,
+        'plan_type':phoneSubscription.planType,
+        'subscriptions':phoneSubscription.subscriptions
+      };
+      Response response = await post(Uri.parse('https://phonesubcriptions-api.azurewebsites.net/api/phoneSubscriptions'),body: jsonEncode(body), headers: <String, String>{
+        'Content-Type': 'application/json'
+      }, );
+      print(response.statusCode);
+    }
+    catch(e){
+
+    }
+  }
 }

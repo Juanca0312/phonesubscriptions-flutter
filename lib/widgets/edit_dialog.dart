@@ -86,7 +86,7 @@ class _EditDialogState extends State<EditDialog> {
                             setState(() {
                               mes = newValue!;
                             });
-                            print(mes);
+
                           },
                           items: items,
                         ),
@@ -137,11 +137,6 @@ class _EditDialogState extends State<EditDialog> {
                   ElevatedButton(onPressed: () {
                     if(_formKey.currentState!.validate()){
                       final updatedData = new PhoneSubscription(id: widget.subscription.id, month: _year.text+'-'+mes+'-'+'01', networkTechnology: _tech.text, planType: _plan.text, subscriptions: int.parse(_subs.text));
-                      print(updatedData.id);
-                      print(updatedData.month);
-                      print(updatedData.networkTechnology);
-                      print(updatedData.planType);
-                      print(updatedData.subscriptions);
 
                       service.updateData(updatedData);
                       Navigator.of(context).pop();
